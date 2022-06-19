@@ -1,10 +1,16 @@
 <script setup>
 import { ref } from "vue";
+import BarChart from "./BarChart.vue";
+// export default {
+//   name: 'Content',
+//   components: { BarChart }
+// }
 // каждый 7 элемент массива новфй день  &units=metric
+// chartjs
 const userCity = ref("Ростов-на-Дону");
 const error = ref(null);
 const weatherAPI = ref(null);
-const tempAverage = ref(null);
+// const tempAverage = ref(null);
 const cityName = ref("");
 
 // инфа по след дням
@@ -39,15 +45,15 @@ function getWeatherAPI() {
       } else {
         weatherAPI.value = result;
         // src.value = `http://openweathermap.org/img/wn/${weatherAPI.value.list[0].weather[0].icon}@2x.png`;
-        tempAverage.value = Math.round(
-          (weatherAPI.value.list[0].main.temp_min +
-            weatherAPI.value.list[0].main.temp_max) /
-            2
-        );
+        // tempAverage.value = Math.round(
+        //   (weatherAPI.value.list[0].main.temp_min +
+        //     weatherAPI.value.list[0].main.temp_max) /
+        //     2
+        // );
         today.value = weatherAPI.value.list[0];
-        firstDay.value = weatherAPI.value.list[8];
-        secondDay.value = weatherAPI.value.list[16];
-        thirdDay.value = weatherAPI.value.list[24];
+        firstDay.value = weatherAPI.value.list[9];
+        secondDay.value = weatherAPI.value.list[17];
+        thirdDay.value = weatherAPI.value.list[25];
         let todayDayWeek = new Date(today.value.dt_txt.split(" ")[0]);
         let firstDayWeek = new Date(firstDay.value.dt_txt.split(" ")[0]);
         let SecondDayWeek = new Date(secondDay.value.dt_txt.split(" ")[0]);
@@ -57,30 +63,45 @@ function getWeatherAPI() {
           month: today.value.dt_txt.split("-")[1],
           dayOfWeek: week[todayDayWeek.getDay()],
           src: `http://openweathermap.org/img/wn/${today.value.weather[0].icon}@2x.png`,
+          tempAverage:
+            Math.round(
+              weatherAPI.value.list[0].main.temp_min +
+                weatherAPI.value.list[0].main.temp_max
+            ) / 2,
         };
         dataFirstDay.value = {
           numberDay: firstDay.value.dt_txt.split("-")[2].split(" ")[0],
           month: firstDay.value.dt_txt.split("-")[1],
           dayOfWeek: week[firstDayWeek.getDay()],
           src: `http://openweathermap.org/img/wn/${firstDay.value.weather[0].icon}@2x.png`,
+          tempAverage:
+            Math.round(
+              firstDay.value.main.temp_min + firstDay.value.main.temp_max
+            ) / 2,
         };
         dataSecondDay.value = {
           numberDay: secondDay.value.dt_txt.split("-")[2].split(" ")[0],
           month: secondDay.value.dt_txt.split("-")[1],
           dayOfWeek: week[SecondDayWeek.getDay()],
           src: `http://openweathermap.org/img/wn/${secondDay.value.weather[0].icon}@2x.png`,
+          tempAverage:
+            Math.round(
+              secondDay.value.main.temp_min + secondDay.value.main.temp_max
+            ) / 2,
         };
         dataThirdDay.value = {
           numberDay: thirdDay.value.dt_txt.split("-")[2].split(" ")[0],
           month: thirdDay.value.dt_txt.split("-")[1],
           dayOfWeek: week[ThirdDayWeek.getDay()],
           src: `http://openweathermap.org/img/wn/${thirdDay.value.weather[0].icon}@2x.png`,
+          tempAverage:
+            Math.round(
+              thirdDay.value.main.temp_min + thirdDay.value.main.temp_max
+            ) / 2,
         };
         cityName.value = weatherAPI.value.city.name;
       }
     });
-
-  tempAverage.value = null;
   error.value = null;
   weatherAPI.value = null;
   userCity.value = "";
@@ -146,7 +167,7 @@ function getWeatherAPI() {
               class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
             >
               <i class="fa-duotone fa-temperature-half text-4xl"></i>
-              <p>{{ tempAverage }}&deg;C</p>
+              <p>{{ today.tempAverage }}&deg;C</p>
             </div>
           </div>
         </div>
@@ -161,7 +182,7 @@ function getWeatherAPI() {
         class="self-center lg:self-auto bg-base-200 rounded-md flex flex-col gap-4 shadow-md p-4 w-[340px]"
       >
         <h1 class="text-center lg:p-2 text-2xl font-bold">
-          Погода на 3 дня, <br />
+          Погода на 3 дня <br />
           {{ cityName }}
         </h1>
         <div class="flex flex-col gap-6 items-center" v-if="weatherAPI">
@@ -172,7 +193,7 @@ function getWeatherAPI() {
               <span class="font-bold"
                 >{{ Math.round(firstDay.main.temp) }}&deg;C</span
               >
-              <img :src="dataThirdDay.src" alt="cityName" class="w-12 h-12" />
+              <img :src="dataFirstDay.src" alt="cityName" class="w-12 h-12" />
             </h2>
             <div class="flex gap-4">
               <div
@@ -191,7 +212,7 @@ function getWeatherAPI() {
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-temperature-half text-4xl"></i>
-                <p>{{ tempAverage }}&deg;C</p>
+                <p>{{ dataFirstDay.tempAverage }}&deg;C</p>
               </div>
             </div>
           </div>
@@ -202,26 +223,26 @@ function getWeatherAPI() {
               <span class="font-bold">
                 {{ Math.round(secondDay.main.temp) }}&deg;C</span
               >
-              <img :src="dataThirdDay.src" alt="cityName" class="w-12 h-12" />
+              <img :src="dataSecondDay.src" alt="cityName" class="w-12 h-12" />
             </h2>
             <div class="flex gap-4">
               <div
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-droplet-percent text-4xl"></i>
-                <p>{{ firstDay.main.humidity }}%</p>
+                <p>{{ secondDay.main.humidity }}%</p>
               </div>
               <div
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-wind text-4xl"></i>
-                <p>{{ firstDay.wind.speed }} m/s</p>
+                <p>{{ secondDay.wind.speed }} m/s</p>
               </div>
               <div
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-temperature-half text-4xl"></i>
-                <p>{{ tempAverage }}&deg;C</p>
+                <p>{{ dataSecondDay.tempAverage }}&deg;C</p>
               </div>
             </div>
           </div>
@@ -239,19 +260,19 @@ function getWeatherAPI() {
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-droplet-percent text-4xl"></i>
-                <p>{{ firstDay.main.humidity }}%</p>
+                <p>{{ thirdDay.main.humidity }}%</p>
               </div>
               <div
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-wind text-4xl"></i>
-                <p>{{ firstDay.wind.speed }} m/s</p>
+                <p>{{ thirdDay.wind.speed }} m/s</p>
               </div>
               <div
                 class="bg-base-300 p-2 rounded-md flex flex-col items-center gap-2 w-[90px]"
               >
                 <i class="fa-duotone fa-temperature-half text-4xl"></i>
-                <p>{{ tempAverage }}&deg;C</p>
+                <p>{{ dataThirdDay.tempAverage }}&deg;С</p>
               </div>
             </div>
           </div>
@@ -261,7 +282,8 @@ function getWeatherAPI() {
       <div
         class="self-center lg:self-auto bg-base-200 rounded-md flex flex-col items-center gap-4 shadow-md p-4 w-[340px]"
       >
-        <h1 class="p-2">Grafik</h1>
+        <h1 class="p-2">ChartJS</h1>
+        <BarChart />
       </div>
     </div>
   </div>
