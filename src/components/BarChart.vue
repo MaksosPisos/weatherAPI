@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <Bar v-if="loaded" :chart-data="chartData" :chart-options="{responsive: true, maintainAspectRatio: false}" :css-classes="cssClasses"/>
+    <Bar
+      v-if="loaded"
+      :chart-data="chartData"
+      :chart-options="{ responsive: true, maintainAspectRatio: false }"
+      :css-classes="cssClasses"
+    />
   </div>
 </template>
 <!-- http://api.weatherapi.com/v1/history.json?key=68a6fc39ac4b44dc8f3213823221606&dt=2022-06-18&end_dt=2022-06-19&q=London&aqi=yes& -->
@@ -52,7 +57,7 @@ const testData = ref({});
 
 function getLastWeatherAPI() {
   fetch(
-    `http://api.weatherapi.com/v1/history.json?key=68a6fc39ac4b44dc8f3213823221606&dt=2022-06-${
+    `https://api.weatherapi.com/v1/history.json?key=68a6fc39ac4b44dc8f3213823221606&dt=2022-06-${
       dataTime.getDate() - 3
     }&end_dt=2022-06-${dataTime.getDate()}&q=Rostov-On-Don"&aqi=yes&`
   )
